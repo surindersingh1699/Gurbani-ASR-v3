@@ -1,0 +1,49 @@
+# Data
+data/audio/
+data/manifests/
+*.mp3
+*.wav
+*.flac
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Secrets
+.env
+.env.local
+
+# Local config
+.mcp.json
+
+# Large binary data
+database.sqlite
+
+# Logs
+logs/
+
+# Model artifacts
+*.bin
+*.pt
+*.onnx
+*.ct2
+
+# Jupyter
+.ipynb_checkpoints/

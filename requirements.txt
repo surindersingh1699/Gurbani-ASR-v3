@@ -1,0 +1,32 @@
+# Surt — Python dependencies
+
+# Core ML
+transformers>=4.40
+peft>=0.11
+datasets>=2.19
+huggingface-hub>=0.23
+evaluate>=0.4
+jiwer>=3.0
+torch>=2.1.0
+
+# Audio
+faster-whisper>=1.0
+whisperx>=3.1
+ctranslate2>=4.0
+audiomentations>=0.36
+demucs>=4.0
+soundfile>=0.12
+librosa>=0.10
+silero-vad>=5.1
+sounddevice>=0.4
+
+# Data pipeline
+aiohttp>=3.9
+aiofiles>=23.2
+requests>=2.31
+tqdm>=4.66
+rank-bm25>=0.2
+filelock>=3.13
+
+# Pipeline orchestration
+flask>=3.0

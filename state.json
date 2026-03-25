@@ -1,0 +1,12 @@
+{
+  "phase": 1,
+  "status": "pending",
+  "approved": false,
+  "wer": null,
+  "checkpoint": null,
+  "runpod_job_id": null,
+  "_retry_count": 0,
+  "history": [],
+  "updated_at": null,
+  "notes": "Set approved=true to kick off Phase 1 training"
+}
