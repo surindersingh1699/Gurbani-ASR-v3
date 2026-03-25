@@ -379,48 +379,137 @@ def refresh_build_id() -> str:
     return get_build_id()
 
 
+def _parse_playback_time(time_str: str) -> float:
+    """Convert 'M:SS' or 'H:MM:SS' playback time string to seconds."""
+    if not time_str:
+        return 0.0
+    parts = time_str.split(":")
+    try:
+        if len(parts) == 2:
+            return int(parts[0]) * 60 + int(parts[1])
+        elif len(parts) == 3:
+            return int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
+    except ValueError:
+        pass
+    return 0.0
+
+
+def _extract_widget_items(data: dict) -> list[dict]:
+    """Extract items from SikhNet Next.js pageProps response.
+
+    Handles the nested structure: pageProps.pageData.standardPage.widgets[].rowsStackedWidget.items
+    """
+    page_props = data.get("pageProps", {})
+    page_data = page_props.get("pageData", {})
+    standard_page = page_data.get("standardPage", {})
+    widgets = standard_page.get("widgets", [])
+
+    all_items = []
+    for widget in widgets:
+        if not isinstance(widget, dict):
+            continue
+        for widget_key in ("rowsStackedWidget", "rowsCarouselWidget"):
+            inner = widget.get(widget_key)
+            if inner and isinstance(inner, dict):
+                items = inner.get("items", [])
+                all_items.extend(items)
+    return all_items
+
+
+def _track_info_to_dict(track_info: dict, artist_slug: str = "", from_playlist: str = "") -> dict:
+    """Convert a SikhNet trackInfo object to our internal track dict."""
+    duration = track_info.get("duration", 0)
+    if isinstance(duration, str):
+        duration = _parse_playback_time(duration)
+    elif not duration:
+        duration = _parse_playback_time(track_info.get("playbackTime", ""))
+
+    # Extract artist slug from artistPathSlug (format: "artist/slug-name")
+    a_slug = artist_slug
+    a_path = track_info.get("artistPathSlug", "")
+    if a_path and a_path.startswith("artist/"):
+        a_slug = a_path[len("artist/"):]
+
+    return {
+        "track_id": track_info.get("id") or track_info.get("trackId"),
+        "title": track_info.get("name", "") or track_info.get("title", ""),
+        "artist_name": track_info.get("artistName", ""),
+        "artist_id": track_info.get("artistId"),
+        "artist_slug": a_slug,
+        "duration_sec": duration,
+        "shabad_id": track_info.get("shabadId"),
+        "album": track_info.get("albumName", "") or track_info.get("albumTitle", ""),
+        "url": track_info.get("resource", "") or track_info.get("url", ""),
+        "_from_playlist": from_playlist,
+    }
+
+
 @retry()
 def discover_artists(max_pages: int = 100) -> list[dict]:
     """Paginate SikhNet search API to discover unique artists.
 
+    Extracts artists from both the "Artists" widget and trackInfo in the "Tracks" widget.
     Returns list of {slug, name, id} dicts.
     """
     seen = {}
     session = _get_session()
+    search_terms = ["kirtan", "shabad", "gurbani", "raag"]
 
-    for page in range(1, max_pages + 1):
-        log.info("Discovering artists page %d...", page)
-        resp = session.get(
-            f"{SIKHNET_BASE}/api/search",
-            params={"q": "kirtan", "type": "audio", "perPage": 50, "page": page},
-            timeout=15,
-        )
-        resp.raise_for_status()
-        data = resp.json()
+    for term in search_terms:
+        for page in range(1, max_pages + 1):
+            log.info("Discovering artists: q=%s page=%d...", term, page)
+            resp = session.get(
+                f"{SIKHNET_BASE}/api/search",
+                params={"q": term, "type": "audio", "perPage": 50, "page": page},
+                timeout=15,
+            )
+            resp.raise_for_status()
+            data = resp.json()
 
-        if not data:
-            break
+            if not data:
+                break
 
-        for item in data:
-            stacked = item.get("rowsStackedWidget", {}).get("items", [])
-            for entry in stacked:
-                track_info = entry.get("action", {}).get("trackInfo", {})
-                artist_name = track_info.get("artistName", "")
-                artist_id = track_info.get("artistId")
-                artist_slug = track_info.get("artistSlug", "")
+            found_new = False
+            for widget in data:
+                rw = widget.get("rowsStackedWidget") or {}
+                attrs = rw.get("attributes") or {}
+                items = rw.get("items") or []
+                title = attrs.get("title", "")
 
-                if artist_slug and artist_slug not in seen:
-                    seen[artist_slug] = {
-                        "slug": artist_slug,
-                        "name": artist_name,
-                        "id": artist_id,
-                    }
+                for entry in items:
+                    action = entry.get("action") or {}
+                    path_slug = action.get("pathSlug", "") or ""
+                    track_info = action.get("trackInfo")
 
-        time.sleep(config.DELAY_SIKHNET)
+                    # From "Artists" widget: pathSlug = "artist/slug-name"
+                    if title == "Artists" and path_slug.startswith("artist/"):
+                        slug = path_slug[len("artist/"):]
+                        if slug and slug not in seen:
+                            seen[slug] = {
+                                "slug": slug,
+                                "name": entry.get("title", ""),
+                                "id": None,
+                            }
+                            found_new = True
 
-        # If fewer results than perPage, we've hit the last page
-        if len(data) < 50:
-            break
+                    # From "Tracks" widget: trackInfo.artistPathSlug
+                    if track_info:
+                        a_path = track_info.get("artistPathSlug", "")
+                        if a_path and a_path.startswith("artist/"):
+                            slug = a_path[len("artist/"):]
+                            if slug and slug not in seen:
+                                seen[slug] = {
+                                    "slug": slug,
+                                    "name": track_info.get("artistName", ""),
+                                    "id": track_info.get("artistId"),
+                                }
+                                found_new = True
+
+            time.sleep(config.DELAY_SIKHNET)
+
+            # Stop paginating this term if no new artists found
+            if not found_new:
+                break
 
     artists = list(seen.values())
     log.info("Discovered %d unique artists", len(artists))
@@ -431,8 +520,8 @@ def discover_artists(max_pages: int = 100) -> list[dict]:
 def get_artist_tracks(slug: str, build_id: str | None = None) -> list[dict]:
     """Fetch all tracks for an artist via SikhNet Next.js data API.
 
-    Returns list of raw track dicts with trackInfo fields.
-    Re-discovers buildId on 404.
+    Navigates: pageProps.pageData.standardPage.widgets[].rowsStackedWidget.items
+    Each item has action.trackInfo with track details.
     """
     if build_id is None:
         build_id = get_build_id()
@@ -450,23 +539,13 @@ def get_artist_tracks(slug: str, build_id: str | None = None) -> list[dict]:
     resp.raise_for_status()
     data = resp.json()
 
+    items = _extract_widget_items(data)
     tracks = []
-    page_props = data.get("pageProps", {})
-    items = page_props.get("tracks", page_props.get("items", []))
-
     for item in items:
-        track_info = item.get("trackInfo", item)
-        tracks.append({
-            "track_id": track_info.get("trackId") or track_info.get("id"),
-            "title": track_info.get("title", ""),
-            "artist_name": track_info.get("artistName", ""),
-            "artist_id": track_info.get("artistId"),
-            "artist_slug": slug,
-            "duration_sec": track_info.get("duration", 0),
-            "shabad_id": track_info.get("shabadId"),
-            "album": track_info.get("albumTitle", ""),
-            "url": track_info.get("url", ""),
-        })
+        track_info = (item.get("action") or {}).get("trackInfo")
+        if not track_info:
+            continue
+        tracks.append(_track_info_to_dict(track_info, artist_slug=slug))
 
     return tracks
 
@@ -489,24 +568,13 @@ def get_playlist_tracks(playlist_slug: str, build_id: str | None = None) -> list
     resp.raise_for_status()
     data = resp.json()
 
+    items = _extract_widget_items(data)
     tracks = []
-    page_props = data.get("pageProps", {})
-    items = page_props.get("tracks", page_props.get("items", []))
-
     for item in items:
-        track_info = item.get("trackInfo", item)
-        tracks.append({
-            "track_id": track_info.get("trackId") or track_info.get("id"),
-            "title": track_info.get("title", ""),
-            "artist_name": track_info.get("artistName", ""),
-            "artist_id": track_info.get("artistId"),
-            "artist_slug": track_info.get("artistSlug", ""),
-            "duration_sec": track_info.get("duration", 0),
-            "shabad_id": track_info.get("shabadId"),
-            "album": track_info.get("albumTitle", ""),
-            "url": track_info.get("url", ""),
-            "_from_playlist": playlist_slug,
-        })
+        track_info = (item.get("action") or {}).get("trackInfo")
+        if not track_info:
+            continue
+        tracks.append(_track_info_to_dict(track_info, from_playlist=playlist_slug))
 
     return tracks
 
