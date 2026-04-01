@@ -1,0 +1,49 @@
+{
+  "version": "1.0",
+  "python_version": "3.11",
+  "generated_at": "2026-03-26T03:47:27.491776Z",
+  "project_name": "Gurbani_ASR_v3",
+  "resources": {
+    "surt-pilot-fb": {
+      "resource_type": "LiveServerless",
+      "file_path": "flash_pilot.py",
+      "local_path_prefix": "/flash_pilot",
+      "module_path": "flash_pilot",
+      "functions": [
+        {
+          "name": "run_pilot",
+          "module": "flash_pilot",
+          "is_async": true,
+          "is_class": false
+        }
+      ],
+      "is_load_balanced": false,
+      "is_live_resource": true,
+      "config_variable": null,
+      "makes_remote_calls": false,
+      "target_python_version": "3.12",
+      "imageName": "runpod/flash:py3.12-latest",
+      "gpuIds": "AMPERE_48,BLACKWELL_96,AMPERE_24,ADA_80_PRO,AMPERE_16,AMPERE_80,ADA_32_PRO,ADA_24,BLACKWELL_180,HOPPER_141,ADA_48_PRO",
+      "workersMin": 0,
+      "workersMax": 1,
+      "idleTimeout": 60,
+      "scalerType": "QUEUE_DELAY",
+      "scalerValue": 4,
+      "minCudaVersion": "12.8",
+      "template": {
+        "containerDiskInGb": 20,
+        "dockerArgs": "",
+        "startScript": "",
+        "advancedStart": false,
+        "containerRegistryAuthId": ""
+      },
+      "handler_file": "handler_surt-pilot-fb.py"
+    }
+  },
+  "function_registry": {
+    "run_pilot": "surt-pilot-fb"
+  },
+  "resources_endpoints": {
+    "surt-pilot-fb": "https://api.runpod.ai/v2/k2dvawby0gt784"
+  }
+}

@@ -23,7 +23,7 @@ Read `docs/INFRA.md` for infrastructure and cost details.
 ## Repository structure
 ```
 surt/
-├── CLAUDE.md                  ← you are here
+├── AGENTS.md                  ← you are here
 ├── docs/
 │   ├── ARCHITECTURE.md        ← model design, vocab constraint, inference
 │   ├── TRAINING.md            ← 5-phase curriculum training plan

@@ -1,9 +1,10 @@
 # Surt — Architecture
 
 ## Model choice
+
 Base model: `openai/whisper-small` (244M params, 12 encoder + 12 decoder layers)
 Fine-tuning: LoRA via Hugging Face PEFT
-Inference: `faster-whisper` with INT8 quantisation
+Inference: `faster-whisper` with INT8 quantisation (reversible — float model always kept on HF Hub)
 
 Upgrade path: if top-3 shabad recall < 85% on live kirtan after full training,
 switch to `openai/whisper-medium` (769M params, 24 layers). Code change is one string.
@@ -15,6 +16,7 @@ harmonium + tabla in live gurdwara conditions. Cannot be fixed by fine-tuning.
 ## Whisper architecture — what each part does
 
 ### Encoder ("the ear")
+
 - Input: log-mel spectrogram of audio (80 mel bins, 3000 time frames = 30s)
 - Output: sequence of dense vectors, one per ~20ms of audio
 - Job: convert raw sound into acoustic representations
@@ -22,6 +24,7 @@ harmonium + tabla in live gurdwara conditions. Cannot be fixed by fine-tuning.
 - LoRA targets in encoder: `self_attn.q_proj`, `self_attn.v_proj` (added Phase 3+)
 
 ### Decoder ("the language model")
+
 Three attention mechanisms per layer:
 
 1. **Self-attention (causal)** — looks at previously generated tokens
@@ -39,11 +42,12 @@ Three attention mechanisms per layer:
    - Do NOT fine-tune — insufficient data at this scale
 
 ## LoRA configuration
+
 ```python
 LoraConfig(
     task_type=TaskType.SEQ_2_SEQ_LM,
     r=16,                    # rank for decoder self-attn
-    lora_alpha=32,           # scaling = 2 × rank
+    lora_alpha=32,           # scaling = 2 x rank
     lora_dropout=0.05,
     target_modules=[
         # Phase 1-2: decoder self-attention only
@@ -60,7 +64,7 @@ LoraConfig(
     bias="none",
 )
 # Trainable params: ~10-15M out of 244M total (whisper-small)
-# Runs on single A100 40GB with batch_size=16
+# Runs on single GPU with batch_size=16
 ```
 
 ## The 3-layer Gurbani-only output constraint
@@ -69,7 +73,8 @@ This is the most important architectural decision. The model CANNOT output
 non-Gurbani words. Three enforcement layers work together:
 
 ### Layer 1 — Token suppression (decoder, at beam search)
-Suppress all token IDs whose string is not in Gurmukhi Unicode block (U+0A00–U+0A7F).
+
+Suppress all token IDs whose string is not in Gurmukhi Unicode block (U+0A00-U+0A7F).
 Passed as `suppress_tokens` list to faster-whisper at inference time.
 ~48,000 of ~50,000 Whisper vocabulary tokens are suppressed.
 Only ~2,000 Gurmukhi tokens remain eligible.
@@ -82,7 +87,9 @@ suppress_tokens = [
 ```
 
 ### Layer 2 — STTM vocabulary constraint (LogitsProcessor)
-Further restrict to only words that appear in the STTM/BaniDB database.
+
+Further restrict to only words that appear in the STTM database
+(SGGS + Dasam Granth + Bhai Gurdas Ji Vara + Nitnem + Sundar Gutka).
 Applied as a custom LogitsProcessor during generation.
 ~800-1200 valid Gurbani word-tokens after this filter.
 Eliminates valid Gurmukhi Unicode that is not Gurbani (e.g. modern Punjabi words).
@@ -97,6 +104,7 @@ class GurbaniOnlyLogitsProcessor(LogitsProcessor):
 ```
 
 ### Layer 3 — Post-filter (output string)
+
 After generation, strip any token not in STTM word set.
 Last line of defence — catches edge cases.
 If output is empty (silence, tabla only, announcements): return None.
@@ -114,16 +122,18 @@ def clean_to_gurbani_only(text: str, sttm_words: set) -> str:
 
 ## Inference pipeline (live, real-time)
 
-```
-Mic → VAD chunk (silero-vad) → faster-whisper → Layer 3 filter → BM25 lookup → display
+```text
+Mic -> VAD chunk (silero-vad) -> faster-whisper -> Layer 3 filter -> BM25 lookup -> display
 ```
 
 ### Timing targets
-- Audio capture → transcript: < 1.5 sec (whisper-small INT8 on CPU)
+
+- Audio capture -> transcript: < 1.5 sec (whisper-small INT8 on CPU; float16 fallback if INT8 degrades recall)
 - BM25 lookup: < 10ms
 - Total mic-to-display latency: < 2 seconds
 
 ### Key parameters
+
 ```python
 model.transcribe(
     audio_chunk,
@@ -138,6 +148,7 @@ model.transcribe(
 ```
 
 ### VAD settings
+
 - Library: silero-vad
 - Buffer: 3 seconds of speech before sending to ASR
 - Overlap: 25% (0.75s) between consecutive chunks to avoid cutting tuks
@@ -146,6 +157,7 @@ model.transcribe(
 ## BM25 shabad lookup
 
 ### Matraa normalisation (most impactful single improvement)
+
 Strip vowel diacritics from BOTH the ASR output AND the STTM index before matching.
 Most ASR errors on Gurmukhi are wrong matraa with correct consonant skeleton.
 This single normalisation improves top-1 recall by ~15-20%.
@@ -157,12 +169,14 @@ def normalise_gurmukhi(text: str) -> str:
 ```
 
 ### Matching strategy
+
 1. BM25 on normalised text (primary, < 10ms)
 2. If top-1 confidence < 0.4, try dense vector search with multilingual-e5-small
 3. Show top-3 candidates with confidence scores
 4. Partial transcript matching — do NOT wait for full shabad before querying
 
 ### Display behaviour
+
 - Show top-3 matches with ang number and confidence bar
 - Hold last confirmed match on screen during silence/tabla-only sections
 - Never clear screen to blank — always show something

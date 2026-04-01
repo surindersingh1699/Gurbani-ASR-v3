@@ -34,7 +34,6 @@ env/
 .mcp.json
 
 # Large binary data
-database.sqlite
 
 # Logs
 logs/
@@ -47,3 +46,4 @@ logs/
 
 # Jupyter
 .ipynb_checkpoints/
+database.sqlite

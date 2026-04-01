@@ -1,0 +1,25 @@
+# Top-level data directory (audio files, manifests) — NOT src/data/ (source code)
+/data/
+/logs/
+/models/
+*.mp3
+*.flac
+*.wav
+__pycache__/
+.git/
+.env
+*.pyc
+trigger_pilot.py
+flash_transcribe.py
+/tests/
+requirements.txt
+pyproject.toml
+
+# Trigger scripts not needed on pod
+trigger_align_pipelines.py
+
+# Only deploy flash_pilot.py (not flash_align_pipelines.py)
+flash_align_pipelines.py
+
+# Override .gitignore: include database.sqlite in deployment (needed for STTM lookups)
+!database.sqlite

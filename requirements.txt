@@ -10,15 +10,21 @@ jiwer>=3.0
 torch>=2.1.0
 
 # Audio
+openai-whisper>=20231117
 faster-whisper>=1.0
 whisperx>=3.1
 ctranslate2>=4.0
 audiomentations>=0.36
 demucs>=4.0
+pydub>=0.25
+scipy>=1.10
 soundfile>=0.12
 librosa>=0.10
 silero-vad>=5.1
 sounddevice>=0.4
+
+# Experiment tracking
+wandb>=0.16
 
 # Data pipeline
 aiohttp>=3.9
@@ -30,3 +36,6 @@ filelock>=3.13
 
 # Pipeline orchestration
 flask>=3.0
+
+# RunPod Flash (GPU serverless)
+runpod-flash>=0.1

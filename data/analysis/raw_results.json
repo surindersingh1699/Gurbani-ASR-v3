@@ -1,0 +1,401 @@
+{
+  "large_v2": {
+    "config_name": "large_v2",
+    "model_name": "faster-whisper-large-v2",
+    "tracks": [
+      {
+        "recording_id": "78bdf1a28e47ddf4",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 11,
+        "tuks_matched": 3,
+        "tuks_total": 14,
+        "tuk_coverage": 0.214,
+        "mean_match_score": 0.4185,
+        "mean_confidence": 0.7544
+      },
+      {
+        "recording_id": "319c0cbbadde0f86",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 39,
+        "tuks_matched": 6,
+        "tuks_total": 19,
+        "tuk_coverage": 0.316,
+        "mean_match_score": 0.2975,
+        "mean_confidence": 0.7559
+      },
+      {
+        "recording_id": "69886cc9f273a4a9",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 7,
+        "tuks_matched": 2,
+        "tuks_total": 26,
+        "tuk_coverage": 0.077,
+        "mean_match_score": 0.4115,
+        "mean_confidence": 0.8319
+      },
+      {
+        "recording_id": "b6d8535017de25ce",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 3,
+        "tuks_matched": 3,
+        "tuks_total": 13,
+        "tuk_coverage": 0.231,
+        "mean_match_score": 0.2177,
+        "mean_confidence": 0.7802
+      }
+    ],
+    "aggregate": {
+      "total_segments": 60,
+      "mean_match_score": 0.329,
+      "median_match_score": 0.2265,
+      "mean_confidence": 0.7657,
+      "tuk_coverage": 0.194
+    }
+  },
+  "large_v3": {
+    "config_name": "large_v3",
+    "model_name": "faster-whisper-large-v3",
+    "tracks": [
+      {
+        "recording_id": "78bdf1a28e47ddf4",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 17,
+        "tuks_matched": 2,
+        "tuks_total": 14,
+        "tuk_coverage": 0.143,
+        "mean_match_score": 0.4273,
+        "mean_confidence": 0.9387
+      },
+      {
+        "recording_id": "319c0cbbadde0f86",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 36,
+        "tuks_matched": 4,
+        "tuks_total": 19,
+        "tuk_coverage": 0.211,
+        "mean_match_score": 0.2403,
+        "mean_confidence": 0.9083
+      },
+      {
+        "recording_id": "69886cc9f273a4a9",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 23,
+        "tuks_matched": 6,
+        "tuks_total": 26,
+        "tuk_coverage": 0.231,
+        "mean_match_score": 0.3135,
+        "mean_confidence": 0.925
+      },
+      {
+        "recording_id": "b6d8535017de25ce",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 38,
+        "tuks_matched": 2,
+        "tuks_total": 13,
+        "tuk_coverage": 0.154,
+        "mean_match_score": 0.2806,
+        "mean_confidence": 0.9044
+      }
+    ],
+    "aggregate": {
+      "total_segments": 114,
+      "mean_match_score": 0.2964,
+      "median_match_score": 0.2353,
+      "mean_confidence": 0.9149,
+      "tuk_coverage": 0.194
+    }
+  },
+  "v3_turbo_base": {
+    "config_name": "v3_turbo_base",
+    "model_name": "faster-whisper-large-v3-turbo-ct2",
+    "tracks": [
+      {
+        "recording_id": "78bdf1a28e47ddf4",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 16,
+        "tuks_matched": 2,
+        "tuks_total": 14,
+        "tuk_coverage": 0.143,
+        "mean_match_score": 0.4102,
+        "mean_confidence": 0.8212
+      },
+      {
+        "recording_id": "319c0cbbadde0f86",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 46,
+        "tuks_matched": 13,
+        "tuks_total": 19,
+        "tuk_coverage": 0.684,
+        "mean_match_score": 0.2645,
+        "mean_confidence": 0.7854
+      },
+      {
+        "recording_id": "69886cc9f273a4a9",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 11,
+        "tuks_matched": 4,
+        "tuks_total": 26,
+        "tuk_coverage": 0.154,
+        "mean_match_score": 0.2961,
+        "mean_confidence": 0.808
+      },
+      {
+        "recording_id": "b6d8535017de25ce",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 22,
+        "tuks_matched": 5,
+        "tuks_total": 13,
+        "tuk_coverage": 0.385,
+        "mean_match_score": 0.2291,
+        "mean_confidence": 0.8029
+      }
+    ],
+    "aggregate": {
+      "total_segments": 95,
+      "mean_match_score": 0.2845,
+      "median_match_score": 0.2222,
+      "mean_confidence": 0.7981,
+      "tuk_coverage": 0.333
+    }
+  },
+  "v3_turbo_rep": {
+    "config_name": "v3_turbo_rep",
+    "model_name": "faster-whisper-large-v3-turbo-ct2",
+    "tracks": [
+      {
+        "recording_id": "78bdf1a28e47ddf4",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 17,
+        "tuks_matched": 2,
+        "tuks_total": 14,
+        "tuk_coverage": 0.143,
+        "mean_match_score": 0.413,
+        "mean_confidence": 0.8413
+      },
+      {
+        "recording_id": "319c0cbbadde0f86",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 26,
+        "tuks_matched": 5,
+        "tuks_total": 19,
+        "tuk_coverage": 0.263,
+        "mean_match_score": 0.2936,
+        "mean_confidence": 0.8271
+      },
+      {
+        "recording_id": "69886cc9f273a4a9",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 10,
+        "tuks_matched": 4,
+        "tuks_total": 26,
+        "tuk_coverage": 0.154,
+        "mean_match_score": 0.2989,
+        "mean_confidence": 0.8032
+      },
+      {
+        "recording_id": "b6d8535017de25ce",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 45,
+        "tuks_matched": 2,
+        "tuks_total": 13,
+        "tuk_coverage": 0.154,
+        "mean_match_score": 0.2593,
+        "mean_confidence": 0.7905
+      }
+    ],
+    "aggregate": {
+      "total_segments": 98,
+      "mean_match_score": 0.2991,
+      "median_match_score": 0.2222,
+      "mean_confidence": 0.8103,
+      "tuk_coverage": 0.181
+    }
+  },
+  "v3_turbo_temp0": {
+    "config_name": "v3_turbo_temp0",
+    "model_name": "faster-whisper-large-v3-turbo-ct2",
+    "tracks": [
+      {
+        "recording_id": "78bdf1a28e47ddf4",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 17,
+        "tuks_matched": 2,
+        "tuks_total": 14,
+        "tuk_coverage": 0.143,
+        "mean_match_score": 0.4203,
+        "mean_confidence": 0.8467
+      },
+      {
+        "recording_id": "319c0cbbadde0f86",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 8,
+        "tuks_matched": 1,
+        "tuks_total": 19,
+        "tuk_coverage": 0.053,
+        "mean_match_score": 0.2555,
+        "mean_confidence": 0.8845
+      },
+      {
+        "recording_id": "69886cc9f273a4a9",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 0,
+        "tuks_matched": 0,
+        "tuks_total": 26,
+        "tuk_coverage": 0.0,
+        "mean_match_score": 0,
+        "mean_confidence": 0
+      },
+      {
+        "recording_id": "b6d8535017de25ce",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 17,
+        "tuks_matched": 2,
+        "tuks_total": 13,
+        "tuk_coverage": 0.154,
+        "mean_match_score": 0.2184,
+        "mean_confidence": 0.8569
+      }
+    ],
+    "aggregate": {
+      "total_segments": 42,
+      "mean_match_score": 0.3072,
+      "median_match_score": 0.2222,
+      "mean_confidence": 0.858,
+      "tuk_coverage": 0.069
+    }
+  },
+  "v3_turbo_beam5": {
+    "config_name": "v3_turbo_beam5",
+    "model_name": "faster-whisper-large-v3-turbo-ct2",
+    "tracks": [
+      {
+        "recording_id": "78bdf1a28e47ddf4",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 17,
+        "tuks_matched": 2,
+        "tuks_total": 14,
+        "tuk_coverage": 0.143,
+        "mean_match_score": 0.4204,
+        "mean_confidence": 0.8572
+      },
+      {
+        "recording_id": "319c0cbbadde0f86",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 30,
+        "tuks_matched": 7,
+        "tuks_total": 19,
+        "tuk_coverage": 0.368,
+        "mean_match_score": 0.2676,
+        "mean_confidence": 0.8116
+      },
+      {
+        "recording_id": "69886cc9f273a4a9",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 13,
+        "tuks_matched": 6,
+        "tuks_total": 26,
+        "tuk_coverage": 0.231,
+        "mean_match_score": 0.3047,
+        "mean_confidence": 0.7571
+      },
+      {
+        "recording_id": "b6d8535017de25ce",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 25,
+        "tuks_matched": 8,
+        "tuks_total": 13,
+        "tuk_coverage": 0.615,
+        "mean_match_score": 0.2407,
+        "mean_confidence": 0.7851
+      }
+    ],
+    "aggregate": {
+      "total_segments": 85,
+      "mean_match_score": 0.2959,
+      "median_match_score": 0.2222,
+      "mean_confidence": 0.8045,
+      "tuk_coverage": 0.319
+    }
+  },
+  "v3_turbo_nocond": {
+    "config_name": "v3_turbo_nocond",
+    "model_name": "faster-whisper-large-v3-turbo-ct2",
+    "tracks": [
+      {
+        "recording_id": "78bdf1a28e47ddf4",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 14,
+        "tuks_matched": 2,
+        "tuks_total": 14,
+        "tuk_coverage": 0.143,
+        "mean_match_score": 0.3764,
+        "mean_confidence": 0.8469
+      },
+      {
+        "recording_id": "319c0cbbadde0f86",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 26,
+        "tuks_matched": 5,
+        "tuks_total": 19,
+        "tuk_coverage": 0.263,
+        "mean_match_score": 0.2235,
+        "mean_confidence": 0.7691
+      },
+      {
+        "recording_id": "69886cc9f273a4a9",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 15,
+        "tuks_matched": 6,
+        "tuks_total": 26,
+        "tuk_coverage": 0.231,
+        "mean_match_score": 0.271,
+        "mean_confidence": 0.7859
+      },
+      {
+        "recording_id": "b6d8535017de25ce",
+        "style_bucket": "hazoori",
+        "artist_name": "Bhai Harjinder Singh (Srinagar)",
+        "segments": 25,
+        "tuks_matched": 4,
+        "tuks_total": 13,
+        "tuk_coverage": 0.308,
+        "mean_match_score": 0.2231,
+        "mean_confidence": 0.8154
+      }
+    ],
+    "aggregate": {
+      "total_segments": 80,
+      "mean_match_score": 0.259,
+      "median_match_score": 0.2222,
+      "mean_confidence": 0.8003,
+      "tuk_coverage": 0.236
+    }
+  }
+}
