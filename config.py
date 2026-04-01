@@ -25,17 +25,17 @@ LORA_DROPOUT    = 0.05
 
 # Target modules per phase — cumulative (each phase adds to previous)
 LORA_TARGETS_PHASE_1 = [
-    "decoder.layers.*.self_attn.q_proj",
-    "decoder.layers.*.self_attn.k_proj",
-    "decoder.layers.*.self_attn.v_proj",
+    "model.decoder.layers.*.self_attn.q_proj",
+    "model.decoder.layers.*.self_attn.k_proj",
+    "model.decoder.layers.*.self_attn.v_proj",
 ]
 LORA_TARGETS_PHASE_2 = LORA_TARGETS_PHASE_1 + [
-    "decoder.layers.*.encoder_attn.q_proj",
-    "decoder.layers.*.encoder_attn.k_proj",
+    "model.decoder.layers.*.encoder_attn.q_proj",
+    "model.decoder.layers.*.encoder_attn.k_proj",
 ]
 LORA_TARGETS_PHASE_3_PLUS = LORA_TARGETS_PHASE_2 + [
-    "encoder.layers.*.self_attn.q_proj",
-    "encoder.layers.*.self_attn.v_proj",
+    "model.encoder.layers.*.self_attn.q_proj",
+    "model.encoder.layers.*.self_attn.v_proj",
 ]
 
 def lora_targets_for_phase(phase: int) -> list[str]:
