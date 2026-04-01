@@ -10,12 +10,13 @@ LANGUAGE        = "pa"                     # Punjabi
 TASK            = "transcribe"
 
 # ─── HF Hub repos ─────────────────────────────────────────────────────────────
-HF_DATASET_REPO = os.environ.get("HF_DATASET_REPO", "YOUR_HF_USERNAME/gurbani-asr-dataset")
-HF_MODEL_REPO   = os.environ.get("HF_MODEL_REPO",   "YOUR_HF_USERNAME/surt-whisper-small")
+HF_DATASET_REPO      = os.environ.get("HF_DATASET_REPO", "surindersinghssj/gurbani-asr")
+HF_MODEL_REPO        = os.environ.get("HF_MODEL_REPO",   "surindersinghssj/surt-whisper-small")
+HF_TEXT_CORPUS_REPO  = os.environ.get("HF_TEXT_CORPUS_REPO", "surindersinghssj/gurbani-asr-text")
 
-# ─── RunPod ───────────────────────────────────────────────────────────────────
-RUNPOD_ENDPOINT       = os.environ.get("RUNPOD_ENDPOINT",       "YOUR_RUNPOD_ENDPOINT_ID")
-RUNPOD_ALIGN_ENDPOINT = os.environ.get("RUNPOD_ALIGN_ENDPOINT", "YOUR_RUNPOD_ALIGN_ENDPOINT_ID")
+# ─── RunPod Flash ─────────────────────────────────────────────────────────────
+# Flash SDK reads RUNPOD_API_KEY from env automatically.
+# Endpoints are managed by Flash (flash_transcribe.py) — no manual IDs needed.
 
 # ─── LoRA ─────────────────────────────────────────────────────────────────────
 LORA_RANK       = 16
@@ -44,14 +45,28 @@ def lora_targets_for_phase(phase: int) -> list[str]:
 
 # ─── Training hyperparameters per phase ───────────────────────────────────────
 TRAINING_CONFIG = {
-    1: {"learning_rate": 1e-4, "warmup_steps": 200,  "max_steps": 2000, "batch_size": 32},
-    2: {"learning_rate": 1e-4, "warmup_steps": 500,  "max_steps": 4000, "batch_size": 16},
-    3: {"learning_rate": 5e-5, "warmup_steps": 300,  "max_steps": 3000, "batch_size": 16},
-    4: {"learning_rate": 3e-5, "warmup_steps": 300,  "max_steps": 5000, "batch_size": 16},
+    1: {"learning_rate": 1e-4, "warmup_steps": 200,  "max_steps": 2000, "batch_size": 32, "save_steps": 200, "eval_steps": 200},
+    2: {"learning_rate": 1e-4, "warmup_steps": 500,  "max_steps": 4000, "batch_size": 16, "save_steps": 500, "eval_steps": 500},
+    3: {"learning_rate": 5e-5, "warmup_steps": 300,  "max_steps": 3000, "batch_size": 16, "save_steps": 500, "eval_steps": 500},
+    4: {"learning_rate": 3e-5, "warmup_steps": 300,  "max_steps": 5000, "batch_size": 16, "save_steps": 500, "eval_steps": 500},
     5: None,  # Phase 5 is quantisation only, no training
 }
 
 GRADIENT_ACCUMULATION_STEPS = 2   # effective batch = batch_size × 2
+
+# ─── Common training arguments (shared across all phases) ────────────────────
+COMMON_TRAINING_ARGS = {
+    "gradient_checkpointing": True,       # trades ~20% speed for ~60% VRAM savings
+    "dataloader_num_workers": 4,          # overlap CPU preprocessing with GPU compute
+    "save_total_limit": 3,                # keep last 3 checkpoints per phase
+    "report_to": "wandb",                 # W&B logging (set WANDB_PROJECT=surt)
+    "fp16": True,
+    "gradient_accumulation_steps": GRADIENT_ACCUMULATION_STEPS,
+    "eval_strategy": "steps",
+    "logging_steps": 50,
+    "push_to_hub": True,
+    "push_to_hub_every": 500,
+}
 
 # ─── WER targets per phase ────────────────────────────────────────────────────
 WER_TARGETS = {
@@ -61,6 +76,10 @@ WER_TARGETS = {
     4: 40.0,    # < 40% on live kirtan (relaxed — recall is the real metric)
 }
 RECALL_TARGET = 85.0  # top-3 shabad recall end-to-end
+
+# ─── Dataset loading ─────────────────────────────────────────────────────────
+DATASET_STREAMING = False        # download + cache, do NOT stream (shuffle quality)
+SHUFFLE_SEED = 42
 
 # ─── Data filtering ───────────────────────────────────────────────────────────
 MIN_DURATION_SEC    = 120      # 2 min
@@ -81,6 +100,13 @@ BUFFER_SECONDS      = 3.0    # audio buffer before sending to ASR
 OVERLAP_SECONDS     = 0.75   # overlap between consecutive chunks (25%)
 BEAM_SIZE           = 2      # speed over accuracy for live use
 APPROVAL_SERVER_PORT = 5055
+SHARD_COUNTER_PORT   = 9112
+# ─── Alignment pipeline ──────────────────────────────────────────────────────
+PUSH_BATCH_SIZE      = 10        # push to HF Hub every N recordings (reduces API calls)
+
+SHARD_COUNTER_URL    = os.environ.get(
+    "SHARD_COUNTER_URL", "http://138.199.174.101:9112"
+)
 
 # Mool Mantar as initial prompt — primes decoder toward Gurbani on every call
 INITIAL_PROMPT = "ੴ ਸਤਿ ਨਾਮੁ ਕਰਤਾ ਪੁਰਖੁ ਨਿਰਭਉ ਨਿਰਵੈਰੁ ਅਕਾਲ ਮੂਰਤਿ ਅਜੂਨੀ ਸੈਭੰ ਗੁਰ ਪ੍ਰਸਾਦਿ"
